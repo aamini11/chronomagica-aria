@@ -40,7 +40,7 @@ function Home() {
 
 			{/* Content */}
 			<div className="flex w-full flex-col items-center gap-4 p-4">
-				<WeatherWidget date={date} />
+				<WeatherWidget />
 				<PlanetaryTable date={date} />
 			</div>
 		</>

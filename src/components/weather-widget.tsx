@@ -17,31 +17,39 @@ interface GeolocationPositionError {
 	message: string
 }
 
-export function WeatherWidget({ date }: { date: Date }) {
+export function WeatherWidget() {
 	const [weather, setWeather] = useState<WeatherData | null>(null)
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
 	const [hasLocation, setHasLocation] = useState(false)
+	const [currentTime, setCurrentTime] = useState(new Date())
 
-	const formattedDate = date.toLocaleString('en-US', {
-		weekday: 'short',
-		month: 'short',
-		day: 'numeric',
+	// Update time every second
+	useEffect(() => {
+		const timer = setInterval(() => setCurrentTime(new Date()), 1000)
+		return () => clearInterval(timer)
+	}, [])
+
+	const formattedTime = currentTime.toLocaleTimeString('en-US', {
 		hour: 'numeric',
 		minute: '2-digit',
+		second: '2-digit',
+	})
+
+	const formattedDate = currentTime.toLocaleDateString('en-US', {
+		weekday: 'long',
+		month: 'long',
+		day: 'numeric',
 	})
 
 	const getWeatherEmoji = (condition: string): string => {
-		const conditionLower = condition.toLowerCase()
-		if (conditionLower.includes('clear') || conditionLower.includes('sunny'))
-			return '☀️'
-		if (conditionLower.includes('cloud')) return '☁️'
-		if (conditionLower.includes('rain')) return '🌧️'
-		if (conditionLower.includes('snow')) return '❄️'
-		if (conditionLower.includes('thunder') || conditionLower.includes('storm'))
-			return '⛈️'
-		if (conditionLower.includes('fog') || conditionLower.includes('mist'))
-			return '🌫️'
+		const c = condition.toLowerCase()
+		if (c.includes('clear') || c.includes('sunny')) return '☀️'
+		if (c.includes('cloud')) return '☁️'
+		if (c.includes('rain')) return '🌧️'
+		if (c.includes('snow')) return '❄️'
+		if (c.includes('thunder') || c.includes('storm')) return '⛈️'
+		if (c.includes('fog') || c.includes('mist')) return '🌫️'
 		return '🌤️'
 	}
 
@@ -51,7 +59,6 @@ export function WeatherWidget({ date }: { date: Date }) {
 				setLoading(true)
 				setError(null)
 
-				// Get user's location
 				const position = await new Promise<GeolocationPosition>(
 					(resolve, reject) => {
 						if (!navigator.geolocation) {
@@ -61,7 +68,7 @@ export function WeatherWidget({ date }: { date: Date }) {
 						navigator.geolocation.getCurrentPosition(resolve, reject, {
 							enableHighAccuracy: true,
 							timeout: 10000,
-							maximumAge: 300000, // 5 minutes
+							maximumAge: 300000,
 						})
 					},
 				)
@@ -69,47 +76,32 @@ export function WeatherWidget({ date }: { date: Date }) {
 				const { latitude, longitude } = position.coords
 				setHasLocation(true)
 
-				// Get weather data from Open-Meteo (free, no API key required)
 				const weatherResponse = await fetch(
 					`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=auto`,
 				)
 
-				if (!weatherResponse.ok) {
-					throw new Error('Failed to fetch weather data')
-				}
+				if (!weatherResponse.ok) throw new Error('Failed to fetch weather')
 
 				const weatherData = await weatherResponse.json()
 
-				// Convert weather code to description
-				const weatherCodes: { [key: number]: string } = {
+				const weatherCodes: Record<number, string> = {
 					0: 'Clear sky',
 					1: 'Mainly clear',
 					2: 'Partly cloudy',
 					3: 'Overcast',
 					45: 'Fog',
-					48: 'Depositing rime fog',
+					48: 'Rime fog',
 					51: 'Light drizzle',
-					53: 'Moderate drizzle',
+					53: 'Drizzle',
 					55: 'Dense drizzle',
-					56: 'Light freezing drizzle',
-					57: 'Dense freezing drizzle',
-					61: 'Slight rain',
-					63: 'Moderate rain',
+					61: 'Light rain',
+					63: 'Rain',
 					65: 'Heavy rain',
-					66: 'Light freezing rain',
-					67: 'Heavy freezing rain',
-					71: 'Slight snow fall',
-					73: 'Moderate snow fall',
-					75: 'Heavy snow fall',
-					77: 'Snow grains',
-					80: 'Slight rain showers',
-					81: 'Moderate rain showers',
-					82: 'Heavy rain showers',
-					85: 'Slight snow showers',
-					86: 'Heavy snow showers',
+					71: 'Light snow',
+					73: 'Snow',
+					75: 'Heavy snow',
+					80: 'Rain showers',
 					95: 'Thunderstorm',
-					96: 'Thunderstorm with slight hail',
-					99: 'Thunderstorm with heavy hail',
 				}
 
 				const condition =
@@ -118,7 +110,6 @@ export function WeatherWidget({ date }: { date: Date }) {
 				const high = Math.round(weatherData.daily.temperature_2m_max[0])
 				const low = Math.round(weatherData.daily.temperature_2m_min[0])
 
-				// Try to get location name via reverse geocoding
 				let location = `${latitude.toFixed(2)}, ${longitude.toFixed(2)}`
 				try {
 					const geoResponse = await fetch(
@@ -131,7 +122,7 @@ export function WeatherWidget({ date }: { date: Date }) {
 							: location
 					}
 				} catch {
-					// Keep default coordinates if geocoding fails
+					// Keep coordinates if geocoding fails
 				}
 
 				setWeather({
@@ -147,24 +138,14 @@ export function WeatherWidget({ date }: { date: Date }) {
 			} catch (err) {
 				const error = err as GeolocationPositionError | Error
 				if ('code' in error) {
-					// Geolocation error
-					switch (error.code) {
-						case 1:
-							setError(
-								'Location access denied. Please enable location permissions.',
-							)
-							break
-						case 2:
-							setError('Location information unavailable.')
-							break
-						case 3:
-							setError('Location request timed out.')
-							break
-						default:
-							setError('Failed to get location.')
+					const messages: Record<number, string> = {
+						1: 'Location access denied',
+						2: 'Location unavailable',
+						3: 'Location request timed out',
 					}
+					setError(messages[error.code] || 'Failed to get location')
 				} else {
-					setError(error.message || 'Failed to fetch weather data.')
+					setError(error.message || 'Failed to fetch weather')
 				}
 				setHasLocation(false)
 			} finally {
@@ -175,15 +156,24 @@ export function WeatherWidget({ date }: { date: Date }) {
 		getLocationAndWeather()
 	}, [])
 
+	const TimeDisplay = () => (
+		<div className="text-center">
+			<div className="font-mono text-4xl font-light tracking-tight">
+				{formattedTime}
+			</div>
+			<div className="text-muted-foreground mt-1 text-sm">{formattedDate}</div>
+		</div>
+	)
+
 	if (loading) {
 		return (
-			<Card className="w-full max-w-lg">
-				<CardContent className="flex flex-col items-center gap-2 p-4 text-center">
-					<span className="text-muted-foreground text-sm">{formattedDate}</span>
+			<Card>
+				<CardContent className="flex flex-col items-center gap-6 p-6">
+					<TimeDisplay />
 					<div className="flex items-center gap-2">
-						<div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent"></div>
-						<span className="text-muted-foreground text-sm">
-							Loading weather...
+						<div className="border-muted-foreground h-3 w-3 animate-spin rounded-full border-2 border-t-transparent" />
+						<span className="text-muted-foreground text-xs">
+							Fetching weather...
 						</span>
 					</div>
 				</CardContent>
@@ -191,52 +181,41 @@ export function WeatherWidget({ date }: { date: Date }) {
 		)
 	}
 
-	if (error || !hasLocation) {
+	if (error || !hasLocation || !weather) {
 		return (
-			<Card className="w-full max-w-lg">
-				<CardContent className="flex flex-col items-center gap-2 p-4 text-center">
-					<span className="text-muted-foreground text-sm">{formattedDate}</span>
-					<span className="text-2xl">🌍</span>
-					<span className="text-muted-foreground text-sm">
-						{error || 'Enable location access to see your local weather'}
-					</span>
+			<Card>
+				<CardContent className="flex flex-col items-center gap-6 p-6">
+					<TimeDisplay />
+					<div className="text-muted-foreground text-center text-xs">
+						{error || 'Enable location for weather'}
+					</div>
 				</CardContent>
 			</Card>
 		)
 	}
 
-	if (!weather) {
-		return (
-			<Card className="w-full max-w-lg">
-				<CardContent className="flex flex-col items-center gap-2 p-4 text-center">
-					<span className="text-muted-foreground text-sm">{formattedDate}</span>
-					<span className="text-2xl">❌</span>
-					<span className="text-muted-foreground text-sm">
-						Failed to load weather data
-					</span>
-				</CardContent>
-			</Card>
-		)
-	}
-
-	const w = weather
 	return (
-		<Card className="w-full max-w-sm">
-			<CardContent className="flex items-center justify-between p-4">
-				<div className="flex items-center gap-3">
-					<span className="text-4xl">{w.conditionEmoji}</span>
-					<div>
-						<span className="text-2xl font-bold">{w.temp}°F</span>
-						<div className="text-muted-foreground text-xs">
-							H:{w.high}° L:{w.low}°
+		<Card>
+			<CardContent className="flex flex-col items-center gap-6 p-6">
+				<TimeDisplay />
+				<div className="flex items-center gap-8">
+					<div className="flex items-center gap-3">
+						<span className="text-5xl">{weather.conditionEmoji}</span>
+						<div>
+							<div className="text-3xl font-semibold">{weather.temp}°</div>
+							<div className="text-muted-foreground text-xs">
+								{weather.high}° / {weather.low}°
+							</div>
 						</div>
 					</div>
-				</div>
-				<div className="text-right">
-					<div className="text-sm font-medium">{w.location}</div>
-					<div className="text-muted-foreground text-xs">{w.condition}</div>
-					<div className="text-muted-foreground text-xs">
-						💧{w.humidity}% • 💨{w.windSpeed}mph
+					<div className="text-muted-foreground space-y-0.5 text-xs">
+						<div className="text-foreground text-lg font-medium">
+							{weather.location}
+						</div>
+						<div>{weather.condition}</div>
+						<div>
+							{weather.humidity}% humidity · {weather.windSpeed} mph
+						</div>
 					</div>
 				</div>
 			</CardContent>
