@@ -1,46 +1,46 @@
-import * as React from "react";
-import { createFileRoute } from "@tanstack/react-router";
-import { PlanetaryTable } from "@/components/planetary-table";
-import { getLuckStatus } from "@/lib/astronomy";
-import { cn } from "@/lib/utils";
+import * as React from 'react'
+import { createFileRoute } from '@tanstack/react-router'
+import { PlanetaryTable } from '@/components/planetary-table'
+import { getLuckStatus } from '@/lib/astronomy'
+import { cn } from '@/lib/utils'
 
-export const Route = createFileRoute("/")({
-  component: Home,
-});
+export const Route = createFileRoute('/')({
+	component: Home,
+})
 
 function Home() {
-  const [date, setDate] = React.useState(new Date());
+	const [date, setDate] = React.useState(new Date())
 
-  // Update time every second
-  React.useEffect(() => {
-    const timer = setInterval(() => setDate(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
+	// Update time every second
+	React.useEffect(() => {
+		const timer = setInterval(() => setDate(new Date()), 1000)
+		return () => clearInterval(timer)
+	}, [])
 
-  const luck = getLuckStatus(date);
+	const luck = getLuckStatus(date)
 
-  return (
-    <>
-      {/* Header */}
-      <div className="text-center flex flex-col gap-2 pt-4 pb-2 border-b border-gray-200">
-        <h1 className="text-3xl font-bold tracking-tight">Today's Energies</h1>
+	return (
+		<>
+			{/* Header */}
+			<div className="flex flex-col gap-2 border-b border-gray-200 pt-4 pb-2 text-center">
+				<h1 className="text-3xl font-bold tracking-tight">Today's Energies</h1>
 
-        {/* Luck Status */}
-        <h2
-          className={cn("text-lg font-bold", {
-            "text-green-500": luck.status === "lucky",
-            "text-red-500": luck.status === "unlucky",
-            "text-gray-500": luck.status === "neutral",
-          })}
-        >
-          {luck.status}
-        </h2>
-      </div>
+				{/* Luck Status */}
+				<h2
+					className={cn('text-lg font-bold', {
+						'text-green-500': luck.status === 'lucky',
+						'text-red-500': luck.status === 'unlucky',
+						'text-gray-500': luck.status === 'neutral',
+					})}
+				>
+					{luck.status}
+				</h2>
+			</div>
 
-      {/* Content */}
-      <div className="w-full p-4 flex items-center justify-center">
-        <PlanetaryTable date={date} />
-      </div>
-    </>
-  );
+			{/* Content */}
+			<div className="flex w-full items-center justify-center p-4">
+				<PlanetaryTable date={date} />
+			</div>
+		</>
+	)
 }

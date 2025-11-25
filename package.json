@@ -8,6 +8,8 @@
 		"serve": "vite preview",
 		"typecheck": "tsc --noEmit",
 		"lint": "oxlint --type-aware --max-warnings=0",
+		"format": "prettier --check '**/*.{js,ts,tsx,json,html,css,md,yml,yaml,astro}'",
+		"format:fix": "prettier --write '**/*.{js,ts,tsx,json,html,css,md,yml,yaml,astro}'",
 		"test": "vitest run",
 		"test:unit": "vitest run --project unit",
 		"test:integration": "vitest run --project browser --project server",
