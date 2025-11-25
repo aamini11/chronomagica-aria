@@ -12,68 +12,83 @@ moon.
 
 ## Symbols
 
-### Weather
+- ☀️ Sunny or Clear
+- ☁️ Cloudy
+- 🌤 Partly Cloudy
+- 🌩️ Thunderstorm
+- 🌧️ Raining
+- 🌨️ Snowing
+- 🌫️ Foggy
 
-☀️ - Sunny or Clear ☁️ - Cloudy 🌤 - Partly Cloudy 🌩️ - Thunderstorm 🌧️ -
-Raining 🌨️ - Snowing 🌫️ - Foggy
+- ☀ Sunrise
+- ☾ Sunset
+- ℞ Retrograde
 
-Sunrise hours unicode: ☀ Sunset hours unicode: ☾
-
-### Moon Phases
-
-New Moon - 🌑︎ Waxing Crescent - 🌒︎ First Quarter - 🌓︎ Waxing Gibbous - 🌔︎
-Full Moon - 🌕︎ Waning Gibbous - 🌖︎ Last Quarter - 🌗︎ Waning Crescent - 🌘︎
-
-The retrograde symbol: ℞
+- 🌑︎ New Moon
+- 🌒︎ Waxing Crescent
+- 🌓︎ First Quarte
+- 🌔︎ Waxing Gibbous
+- 🌕︎ Full Moon
+- 🌖︎ Waning Gibbous
+- 🌗︎ Last Quarter
+- 🌘︎ Waning Crescent
 
 ### Planets
 
-Sol - ☉ Luna - ☽︎ Mercury - ☿ Venus - ♀ Mars - ♂ Jupiter - ♃ Saturn - ♄
-Uranus - ♅ Neptune - ♆ Pluto - ⯓
+- ☉ Sol
+- ☽︎ Luna
+- ☿ Mercury
+- ♀ Venus
+- ♂ Mars
+- ♃ Jupiter
+- ♄ Saturn
+- ♅ Uranus
+- ♆ Neptune
+- ♇ Pluto
 
 ### Zodiac Signs
 
-Aries - ♈︎ Taurus - ♉︎ Gemini - ♊︎ Cancer - ♋︎ Leo - ♌︎ Virgo - ♍︎ Libra -
-♎︎ Scorpio - ♏︎ Sagittarius - ♐︎ Capricorn - ♑︎ Aquarius - ♒︎ Pisces - ♓︎
+- ♈︎ Aries
+- ♉︎ Taurus
+- ♊︎ Gemini
+- ♋ Cancer
+- ♌︎ Leo
+- ♍︎ Virgo
+- ♎︎ Libra
+- ♏︎ Scorpio
+- ♐︎ Sagittarius
+- ♑︎ Capricorn
+- ♒︎ Aquarius
+- ♓︎ Pisces
 
 ## Colors
 
-Light Mode: Sol - #ffd071 Luna - #d1d1d1 Mercury - #fff59c Venus - #95f3ad
-Mars - #ffc5c5 Jupiter - #9fdcff Saturn - #a5a5a5 Uranus - #c9bcff Neptune -
-#f9b6ff Pluto - #e5baa5
+Light Mode:
 
-Dark Mode: Sol - #ac7403 Luna - #919191 Mercury - #918308 Venus - #004812 Mars -
-#7a0000 Jupiter - #00467f Saturn - #1d1d1d Uranus - #250076 Neptune - #7b0085
-Pluto - #4f2916
+- #ffd071: Sol
+- #d1d1d1: Luna
+- #fff59c: Mercury
+- #95f3ad: Venus
+- #ffc5c5: Mars
+- #9fdcff: Jupiter
+- #a5a5a5: Saturn
+- #c9bcff: Uranus
+- #f9b6ff: Neptune
+- #e5baa5: Pluto
 
-Lucky Text: #009626 Unlucky Text: #ff0036 Neutral Text: #000
+Dark Mode:
 
-## Structure
+- #ac7403: Sol
+- #919191: Luna
+- #918308: Mercury
+- #004812: Venus
+- #7a0000: Mars
+- #00467f: Jupiter
+- #1d1d1d: Saturn
+- #250076: Uranus
+- #7b0085: Neptune
+- #4f2916: Pluto
 
-### Header
-
-Current Date | Current Time Current Location (Auto-detected but adjustable) |
-Current Weather
-
-### Astrology Table
-
-A table with 3 columns: Planet Name | Planet Status | Planet Sign
-
-#### Planet Status
-
-The sun (labeled as Sol) should only have a status if there is a 'Solar Eclipse'
-or 'Lunar Eclipse'. (It should also say if it's a Partial or Total Eclipse.)
-
-The moon (labeled as Luna) should always show the current moon phase for its
-status. (The options are above in the moon phases section.)
-
-All other planets should ONLY have a status if it is currently Retrograde. If a
-planet is Retrograde, all text in the row should also be made red.
-
-### Planetary Hours
-
-A table with 2 columns: Planetary Hour | Planet Name + Planetary Sign
-
-### Lucky Status
-
-Display the lucky status for the current day.
+- #009626: Lucky Text
+- #ff0036: Unlucky Text
+- #000???: Neutral Text
