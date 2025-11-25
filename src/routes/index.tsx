@@ -22,7 +22,7 @@ function Home() {
 	return (
 		<>
 			{/* Header */}
-			<div className="flex flex-col gap-2 border-b border-gray-200 pt-4 pb-2 text-center">
+			<div className="flex flex-col gap-2 border-b pt-4 pb-2 text-center">
 				<h1 className="text-3xl font-bold tracking-tight">Today's Energies</h1>
 
 				{/* Luck Status */}
