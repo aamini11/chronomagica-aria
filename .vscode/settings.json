@@ -17,7 +17,8 @@
 		"**/node_modules": true,
 		"**/.output": true,
 		"**/.nitro": true,
-		"**/routeTree.gen.ts": true
+		"**/routeTree.gen.ts": true,
+		"**/.tanstack": true
 	},
 
 	// General
