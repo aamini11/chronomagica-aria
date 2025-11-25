@@ -24,13 +24,11 @@ export function WeatherWidget({ date }: { date: Date }) {
 	const [hasLocation, setHasLocation] = useState(false)
 
 	const formattedDate = date.toLocaleString('en-US', {
-		weekday: 'long',
-		year: 'numeric',
-		month: 'long',
+		weekday: 'short',
+		month: 'short',
 		day: 'numeric',
-		hour: '2-digit',
+		hour: 'numeric',
 		minute: '2-digit',
-		second: '2-digit',
 	})
 
 	const getWeatherEmoji = (condition: string): string => {
@@ -223,30 +221,22 @@ export function WeatherWidget({ date }: { date: Date }) {
 
 	const w = weather
 	return (
-		<Card className="w-full max-w-lg">
-			<CardContent className="flex flex-col gap-2 p-4">
-				<span className="text-muted-foreground text-center text-sm">
-					{formattedDate}
-				</span>
-				<div className="flex items-center justify-between gap-4">
-					{/* Left: Location & Condition */}
-					<div className="flex flex-col gap-1">
-						<span className="text-muted-foreground text-sm">
-							📍 {w.location}
-						</span>
-						<span className="text-3xl font-bold">
-							{w.conditionEmoji} {w.temp}°F
-						</span>
-						<span className="text-muted-foreground text-sm">{w.condition}</span>
+		<Card className="w-full max-w-sm">
+			<CardContent className="flex items-center justify-between p-4">
+				<div className="flex items-center gap-3">
+					<span className="text-4xl">{w.conditionEmoji}</span>
+					<div>
+						<span className="text-2xl font-bold">{w.temp}°F</span>
+						<div className="text-muted-foreground text-xs">
+							H:{w.high}° L:{w.low}°
+						</div>
 					</div>
-
-					{/* Right: Details */}
-					<div className="text-muted-foreground flex flex-col gap-1 text-right text-sm">
-						<span>
-							H: {w.high}° L: {w.low}°
-						</span>
-						<span>💧 {w.humidity}%</span>
-						<span>💨 {w.windSpeed} mph</span>
+				</div>
+				<div className="text-right">
+					<div className="text-sm font-medium">{w.location}</div>
+					<div className="text-muted-foreground text-xs">{w.condition}</div>
+					<div className="text-muted-foreground text-xs">
+						💧{w.humidity}% • 💨{w.windSpeed}mph
 					</div>
 				</div>
 			</CardContent>
