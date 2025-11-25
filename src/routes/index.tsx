@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { PlanetaryTable } from '@/components/planetary-table'
+import { WeatherWidget } from '@/components/weather-widget'
 import { getLuckStatus } from '@/lib/astronomy'
 import { cn } from '@/lib/utils'
 
@@ -38,7 +39,8 @@ function Home() {
 			</div>
 
 			{/* Content */}
-			<div className="flex w-full items-center justify-center p-4">
+			<div className="flex w-full flex-col items-center gap-4 p-4">
+				<WeatherWidget date={date} />
 				<PlanetaryTable date={date} />
 			</div>
 		</>

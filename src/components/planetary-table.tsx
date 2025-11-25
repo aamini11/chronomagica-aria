@@ -1,11 +1,5 @@
 import { getPlanetaryStatus, getZodiacSign, PLANETS } from '@/lib/astronomy'
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
 	Table,
 	TableHeader,
@@ -14,24 +8,13 @@ import {
 	TableBody,
 	TableCell,
 } from '@/components/ui/table'
-import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
 
 export function PlanetaryTable({ date }: { date: Date }) {
 	return (
 		<Card className="w-full max-w-lg text-xl">
 			<CardHeader className="text-center">
 				<CardTitle className="text-2xl">Planetary Table</CardTitle>
-				<CardDescription>
-					{date.toLocaleString('en-US', {
-						weekday: 'long',
-						year: 'numeric',
-						month: 'long',
-						day: 'numeric',
-						hour: '2-digit',
-						minute: '2-digit',
-						second: '2-digit',
-					})}
-				</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<Table>
@@ -55,14 +38,16 @@ export function PlanetaryTable({ date }: { date: Date }) {
 										{planet.symbol} {planet.name}
 									</TableCell>
 
-									<TableCell
-										className={cn('text-center', {
-											'text-red-500': status === '℞ Retrograde',
-										})}
-									>
-										{typeof status === 'object'
-											? `${status.symbol} ${status.name}`
-											: status}
+									<TableCell className="text-center">
+										{typeof status === 'object' ? (
+											<Badge>
+												{status.symbol} {status.name}
+											</Badge>
+										) : status === '℞ Retrograde' ? (
+											<Badge className="bg-red-500">{status}</Badge>
+										) : (
+											status && <Badge>{status}</Badge>
+										)}
 									</TableCell>
 
 									<TableCell>
